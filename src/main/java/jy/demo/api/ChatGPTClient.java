@@ -1,4 +1,4 @@
-package jy.demo;
+package jy.demo.api;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
@@ -67,7 +67,6 @@ public class ChatGPTClient {
     }
 
 
-    
     private String callAPI(String requestData) {
         StringBuilder response = new StringBuilder();
         HttpClient httpClient = HttpClients.createDefault();

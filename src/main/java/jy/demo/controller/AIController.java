@@ -1,7 +1,11 @@
-package jy.demo;
+package jy.demo.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import jy.demo.api.ChatGPTClient;
+import jy.demo.api.DalaiClient;
+
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,9 +15,11 @@ import java.util.Map;
 public class AIController {
 
 	private final ChatGPTClient chatGPTClient;
+	private final DalaiClient dalaiClient;
 
-	public AIController(ChatGPTClient chatGPTClient) {
+	public AIController(ChatGPTClient chatGPTClient, DalaiClient dalaiClient) {	
 		this.chatGPTClient = chatGPTClient;
+		this.dalaiClient = dalaiClient;
 	}
 
 	private final String SYS_PROMPT =  
@@ -34,4 +40,11 @@ public class AIController {
 	public String doRefactoring(@RequestBody Map<String, String> prompt) {
 		return chatGPTClient.sendRequest(prompt.get("prompt"), SYS_PROMPT);
 	}
+
+
+	@GetMapping("/ai")
+	public String doAI(@RequestParam("prompt") String prompt) {
+		return dalaiClient.sendPrompt(prompt);
+	}
+
 }
