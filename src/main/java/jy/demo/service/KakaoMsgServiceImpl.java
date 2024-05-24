@@ -36,21 +36,8 @@ public class KakaoMsgServiceImpl {
 
 	public boolean requestAccessToken(String code)  {
 		
-		KakaoOAuthDto body2 = new KakaoOAuthDto(code);
-		Map<String, String> body = new HashMap<>();
-		body.put("code", code);
-		body.put("grant_type", "authorization_code");
-		body.put("client_id", "620c9095c04cad076902cde3e1237d7a");
-		body.put("redirect_url", 
-						"http://southoftheriver.synology.me:8081/kakao/callback");
-
-
-		System.out.println(body);
-		System.out.println(body2.toMap());
-
-		MapDifference<String, String> diff = Maps.difference(body, body2.toMap());
-		
-        Map<String, String> result = apiClient.post(AUTH_URL, body2.toMap(), apiClient.generateUrlEncodedHeader());
+		KakaoOAuthDto body = new KakaoOAuthDto(code);
+        Map<String, String> result = apiClient.post(AUTH_URL, body, apiClient.generateUrlEncodedHeader());
 
 		accessToken = result.get("access_token").toString();
 		refrashToken = result.get("refresh_token").toString();
