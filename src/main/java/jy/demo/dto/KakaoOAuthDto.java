@@ -1,19 +1,17 @@
 package jy.demo.dto;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
+import jy.demo.util.HTTPStatic;
 
-
-public class KakaoOAuthDto implements HttpRequestDto{
+public class KakaoOAuthDto implements JsonConvertible{
 
         private String code = "";
-        private String grantType = "authorization_code";
-        private String clientId = "620c9095c04cad076902cde3e1237d7a";
-        private String redirectUrl = "http://southoftheriver.synology.me:8081/kakao/callback";
+        private String grantType = HTTPStatic.KAKAO_OAUTH_GRANT_TYPE;
+        private String clientId = "";
+        private String redirectUrl = HTTPStatic.KAKAO_REDIRECT_URL;
 
-        public KakaoOAuthDto(String code) {
+        public KakaoOAuthDto(String code, String clientId) {
             this.code = code;
+            this.clientId = clientId;
         }
 }
 

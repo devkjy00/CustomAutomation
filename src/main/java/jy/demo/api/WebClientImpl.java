@@ -1,57 +1,63 @@
 package jy.demo.api;
 
-import java.util.*;
+import java.util.Map;
+
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
 
+import jy.demo.dto.JsonConvertible;
 import jy.demo.util.JsonUtil;
-
-import jy.demo.dto.HttpRequestDto;
 
 
 @Component
 public class WebClientImpl implements ApiClient {
 
 	private final WebClient webClient;
-    // private final Map<String, Function<HttpRequestDto, String>> encFuncMap; 
 
-    private final JsonUtil jsonUtil;
-
-    public WebClientImpl(WebClient webClient, JsonUtil jsonUtil){
+    public WebClientImpl(WebClient webClient){
         this.webClient = webClient;
-        this.jsonUtil = jsonUtil;
-
-        // this.encFuncMap = Map.of(
-        //     APP_TYPE_URL_ENCODED, ((body) -> jsonUtil.toEncodedUrl(body)),
-        //     APP_TYPE_JSON, ((body) -> jsonUtil.toJson(body))
-        //     );
     }
 
-    public Map<String, String> post(String uri, Map<String, String> body, Map<String, String> headers) {
-
-        return webClient.post()
+    public String post(String uri, String body, Map<String, String> headers) {
+        RequestBodySpec headersSpec = webClient.post()
             .uri(uri)
-            .headers(header -> header.addAll(convertToMultiValueMap(headers)))
-            // .bodyValue(encFunction.apply(body))
-            .body(BodyInserters.fromFormData(convertToMultiValueMap(body)))
-            // .body(BodyInserters.fromFormData(convertToMultiValueMap(body.toMap())))
-            // .body(convertToMultiValueMap(jsonUtil.toMap(encFunction.apply(body))))
+            .headers(httpHeaders -> {
+                httpHeaders.setAll(headers);
+            });
+
+        headersSpec = setRequestSpec(body, headers, headersSpec);
+
+        return headersSpec
             .retrieve()
-            .bodyToMono(new ParameterizedTypeReference<Map<String, String>>() {}) 
+            .bodyToMono(new ParameterizedTypeReference<String>() {}) 
             .block();
     }
 
+    private RequestBodySpec setRequestSpec(String body, Map<String, String> headers, WebClient.RequestBodySpec headersSpec) {
 
-    @Override
-    public Map<String, String> post(String uri, HttpRequestDto body, Map<String, String> headers) {
+        if (headers.containsKey(CONTENT_TYPE) && headers.get(CONTENT_TYPE).equals(APP_TYPE_URL_ENCODED)) {
+            // URL encoded form data 처리
+            MultiValueMap<String, String> formData = convertToMultiValueMap(JsonUtil.toMap(body));
+            headersSpec.body(BodyInserters.fromFormData(formData));
+        } else {
+            // 기본적으로 JSON으로 처리
+            headersSpec.bodyValue(body);
+        }
 
-        Map<String, String> bodyMap = jsonUtil.toMap(body);
-        return post(uri, bodyMap, headers);
+        return headersSpec;
+    }
 
+    public String post(String uri, JsonConvertible body, Map<String, String> headers) {
+        return post(uri, JsonUtil.toJson(body), headers);
+    }
+
+    public String post(String uri, String body, String headers) { 
+        return post(uri, body, JsonUtil.toMap(headers));
     }
 
     private MultiValueMap<String, String> convertToMultiValueMap(Map<String, String> map){

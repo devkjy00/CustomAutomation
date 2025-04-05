@@ -1,5 +1,8 @@
 package jy.demo.dto;
 
+import java.util.Map;
+
+import jy.demo.util.KakaoConstants;
 import lombok.Data;
 
 /**
@@ -13,12 +16,16 @@ import lombok.Data;
  * button_title: "바로 확인"
  */
 @Data
-// public class KakaoMsgDto implements HttpRequestDto{
-public class KakaoMsgDto {
-
-    private String objType;
+public class KakaoMsgDto implements JsonConvertible {
+    private String objectType = KakaoConstants.MSG_OBJECT_TYPE;
     private String text;
-    private String webUrl;
-    private String mobileUrl;
-    private String btnTitle;
+    private Map<String, String> link = Map.of(
+        "web_url", KakaoConstants.MSG_LINK_WEB_URL,
+        "mobile_web_url", KakaoConstants.MSG_LINK_MOBILE_WEB_URL
+    );
+    private String buttonTitle = KakaoConstants.MSG_BUTTON_TITLE;
+
+    public KakaoMsgDto(String text) {
+        this.text = text;
+    }   
 }

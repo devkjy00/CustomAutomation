@@ -30,7 +30,6 @@ public class AIController {
 		" \n" + 
 		"input : \n";
 
-
 	@GetMapping("/refactoring")
 	public String doRefactoring(@RequestParam("prompt") String prompt) {
 		return chatGPTClient.sendRequest(prompt, SYS_PROMPT);
@@ -41,10 +40,8 @@ public class AIController {
 		return chatGPTClient.sendRequest(prompt.get("prompt"), SYS_PROMPT);
 	}
 
-
 	@GetMapping("/ai")
 	public String doAI(@RequestParam("prompt") String prompt) {
 		return dalaiClient.sendPrompt(prompt);
 	}
-
 }

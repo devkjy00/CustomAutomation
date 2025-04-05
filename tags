@@ -1,0 +1,144 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+AIController	src/main/java/jy/demo/controller/AIController.java	/^	public AIController(ChatGPTClient chatGPTClient, DalaiClient dalaiClient) {	$/;"	m	class:AIController
+AIController	src/main/java/jy/demo/controller/AIController.java	/^public class AIController {$/;"	c
+APP_BASE_NAME	gradlew.bat	/^set APP_BASE_NAME=%~n0$/;"	v
+APP_HOME	gradlew.bat	/^for %%i in ("%APP_HOME%") do set APP_HOME=%%~fi$/;"	v
+APP_HOME	gradlew.bat	/^set APP_HOME=%DIRNAME%$/;"	v
+APP_TYPE_JSON	src/main/java/jy/demo/api/ApiClient.java	/^    final String APP_TYPE_JSON = "application\/json;charset=UTF-8";$/;"	f	interface:ApiClient
+APP_TYPE_URL_ENCODED	src/main/java/jy/demo/api/ApiClient.java	/^    final String APP_TYPE_URL_ENCODED = "application\/x-www-form-urlencoded;charset=UTF-8";$/;"	f	interface:ApiClient
+AUTH_URL	src/main/java/jy/demo/service/KakaoMsgServiceImpl.java	/^    private static final String AUTH_URL = "https:\/\/kauth.kakao.com\/oauth\/token";$/;"	f	class:KakaoMsgServiceImpl	file:
+ApiClient	src/main/java/jy/demo/api/ApiClient.java	/^public interface ApiClient {$/;"	i
+AuthController	src/main/java/jy/demo/controller/AuthController.java	/^    public AuthController(KakaoMsgServiceImpl kakaoMsgServiceImpl) {$/;"	m	class:AuthController
+AuthController	src/main/java/jy/demo/controller/AuthController.java	/^public class AuthController {$/;"	c
+BeanConifg	src/main/java/jy/demo/config/BeanConifg.java	/^public class BeanConifg {$/;"	c
+CLASSPATH	gradlew.bat	/^set CLASSPATH=%APP_HOME%\\gradle\\wrapper\\gradle-wrapper.jar$/;"	v
+CONTENT_TYPE	src/main/java/jy/demo/api/ApiClient.java	/^    final String CONTENT_TYPE = "Content-Type";$/;"	f	interface:ApiClient
+ChatGPTClient	src/main/java/jy/demo/api/ChatGPTClient.java	/^public class ChatGPTClient {$/;"	c
+CorsConfig	src/main/java/jy/demo/config/CorsConfig.java	/^public class CorsConfig implements WebMvcConfigurer {$/;"	c
+CustomautoApplication	src/main/java/jy/demo/CustomautoApplication.java	/^public class CustomautoApplication {$/;"	c
+CustomautoApplicationTests	src/test/java/jy/demo/CustomautoApplicationTests.java	/^class CustomautoApplicationTests {$/;"	c
+DEFAULT_JVM_OPTS	gradlew.bat	/^set DEFAULT_JVM_OPTS="-Xmx64m" "-Xms64m"$/;"	v
+DIRNAME	gradlew.bat	/^if "%DIRNAME%"=="" set DIRNAME=.$/;"	v
+DIRNAME	gradlew.bat	/^set DIRNAME=%~dp0$/;"	v
+DalaiClient	src/main/java/jy/demo/api/DalaiClient.java	/^public interface DalaiClient {$/;"	i
+DalaiServiceImpl	src/main/java/jy/demo/service/DalaiServiceImpl.java	/^	public DalaiServiceImpl(DalaiClient dalaiClient) {$/;"	m	class:DalaiServiceImpl
+DalaiServiceImpl	src/main/java/jy/demo/service/DalaiServiceImpl.java	/^public class DalaiServiceImpl {$/;"	c
+EXIT_CODE	gradlew.bat	/^if %EXIT_CODE% equ 0 set EXIT_CODE=1$/;"	v
+EXIT_CODE	gradlew.bat	/^set EXIT_CODE=%ERRORLEVEL%$/;"	v
+JAVA_EXE	gradlew.bat	/^set JAVA_EXE=%JAVA_HOME%\/bin\/java.exe$/;"	v
+JAVA_EXE	gradlew.bat	/^set JAVA_EXE=java.exe$/;"	v
+JAVA_HOME	gradlew.bat	/^set JAVA_HOME=%JAVA_HOME:"=%$/;"	v
+JsonConvertible	src/main/java/jy/demo/dto/JsonConvertible.java	/^public interface JsonConvertible {$/;"	i
+JsonUtil	src/main/java/jy/demo/util/JsonUtil.java	/^public class JsonUtil {$/;"	c
+KakaoMsgDto	src/main/java/jy/demo/dto/KakaoMsgDto.java	/^public class KakaoMsgDto implements JsonConvertible{$/;"	c
+KakaoMsgServiceImpl	src/main/java/jy/demo/service/KakaoMsgServiceImpl.java	/^	public KakaoMsgServiceImpl(WebClientImpl apiClient) {$/;"	m	class:KakaoMsgServiceImpl
+KakaoMsgServiceImpl	src/main/java/jy/demo/service/KakaoMsgServiceImpl.java	/^public class KakaoMsgServiceImpl implements MessageService{$/;"	c
+KakaoOAuthDto	src/main/java/jy/demo/dto/KakaoOAuthDto.java	/^        public KakaoOAuthDto(String code) {$/;"	m	class:KakaoOAuthDto
+KakaoOAuthDto	src/main/java/jy/demo/dto/KakaoOAuthDto.java	/^public class KakaoOAuthDto implements JsonConvertible{$/;"	c
+MSG_SEND_SERVICE_URL	src/main/java/jy/demo/service/KakaoMsgServiceImpl.java	/^	private static final String MSG_SEND_SERVICE_URL = "https:\/\/kapi.kakao.com\/v2\/api\/talk\/memo\/default\/send";$/;"	f	class:KakaoMsgServiceImpl	file:
+MessageService	src/main/java/jy/demo/service/MessageService.java	/^public interface MessageService {$/;"	i
+SEND_FAIL_MSG	src/main/java/jy/demo/service/KakaoMsgServiceImpl.java	/^	private static final String SEND_FAIL_MSG = "메시지 전송에 실패했습니다.";$/;"	f	class:KakaoMsgServiceImpl	file:
+SEND_SUCCESS_MSG	src/main/java/jy/demo/service/KakaoMsgServiceImpl.java	/^	private static final String SEND_SUCCESS_MSG = "메시지 전송에 성공했습니다.";$/;"	f	class:KakaoMsgServiceImpl	file:
+SUCCESS_CODE	src/main/java/jy/demo/service/KakaoMsgServiceImpl.java	/^	private static final String SUCCESS_CODE = "0"; \/\/kakao api에서 return해주는 success code 값$/;"	f	class:KakaoMsgServiceImpl	file:
+SYS_PROMPT	src/main/java/jy/demo/controller/AIController.java	/^	private final String SYS_PROMPT =  $/;"	f	class:AIController	file:
+WebClientImpl	src/main/java/jy/demo/api/WebClientImpl.java	/^    public WebClientImpl(WebClient webClient, JsonUtil jsonUtil){$/;"	m	class:WebClientImpl
+WebClientImpl	src/main/java/jy/demo/api/WebClientImpl.java	/^public class WebClientImpl implements ApiClient {$/;"	c
+accessToken	src/main/java/jy/demo/service/KakaoMsgServiceImpl.java	/^	public String accessToken = "";$/;"	f	class:KakaoMsgServiceImpl
+addClass	build/reports/tests/test/js/report.js	/^    function addClass(element, classValue) {$/;"	f
+addCorsMappings	src/main/java/jy/demo/config/CorsConfig.java	/^    public void addCorsMappings(CorsRegistry registry) {$/;"	m	class:CorsConfig
+apiClient	src/main/java/jy/demo/service/KakaoMsgServiceImpl.java	/^    private final WebClientImpl apiClient;$/;"	f	class:KakaoMsgServiceImpl	file:
+apiKey	src/main/java/jy/demo/api/ChatGPTClient.java	/^    private String apiKey;$/;"	f	class:ChatGPTClient	file:
+apiUrl	src/main/java/jy/demo/api/ChatGPTClient.java	/^    private String apiUrl;$/;"	f	class:ChatGPTClient	file:
+btnTitle	src/main/java/jy/demo/dto/KakaoMsgDto.java	/^    private String btnTitle;$/;"	f	class:KakaoMsgDto	file:
+callAPI	src/main/java/jy/demo/api/ChatGPTClient.java	/^    private String callAPI(String requestData) {$/;"	m	class:ChatGPTClient	file:
+changeElementClass	build/reports/tests/test/js/report.js	/^    function changeElementClass(element, classValue) {$/;"	f
+chatGPTClient	src/main/java/jy/demo/controller/AIController.java	/^	private final ChatGPTClient chatGPTClient;$/;"	f	class:AIController	file:
+clientId	src/main/java/jy/demo/dto/KakaoOAuthDto.java	/^        private String clientId = "620c9095c04cad076902cde3e1237d7a";$/;"	f	class:KakaoOAuthDto	file:
+code	src/main/java/jy/demo/dto/KakaoOAuthDto.java	/^        private String code = "";$/;"	f	class:KakaoOAuthDto	file:
+contextLoads	src/test/java/jy/demo/CustomautoApplicationTests.java	/^	void contextLoads() {$/;"	m	class:CustomautoApplicationTests
+convertToMultiValueMap	src/main/java/jy/demo/api/WebClientImpl.java	/^    private MultiValueMap<String, String> convertToMultiValueMap(Map<String, String> map){$/;"	m	class:WebClientImpl	file:
+dalaiClient	src/main/java/jy/demo/controller/AIController.java	/^	private final DalaiClient dalaiClient;$/;"	f	class:AIController	file:
+dalaiClient	src/main/java/jy/demo/service/DalaiServiceImpl.java	/^	private final DalaiClient dalaiClient;$/;"	f	class:DalaiServiceImpl	file:
+deselectAll	build/reports/tests/test/js/report.js	/^    function deselectAll() {$/;"	f
+die	gradlew	/^die () {$/;"	f
+doAI	src/main/java/jy/demo/controller/AIController.java	/^	public String doAI(@RequestParam("prompt") String prompt) {$/;"	m	class:AIController
+doRefactoring	src/main/java/jy/demo/controller/AIController.java	/^	public String doRefactoring(@RequestBody Map<String, String> prompt) {$/;"	m	class:AIController
+doRefactoring	src/main/java/jy/demo/controller/AIController.java	/^	public String doRefactoring(@RequestParam("prompt") String prompt) {$/;"	m	class:AIController
+end	gradlew.bat	/^:end$/;"	l
+execute	gradlew.bat	/^:execute$/;"	l
+fail	gradlew.bat	/^:fail$/;"	l
+findChildElements	build/reports/tests/test/js/report.js	/^    function findChildElements(container, name, targetClass) {$/;"	f
+findCodeBlocks	build/reports/tests/test/js/report.js	/^    function findCodeBlocks() {$/;"	f
+findHeaders	build/reports/tests/test/js/report.js	/^    function findHeaders(container) {$/;"	f
+findJavaFromJavaHome	gradlew.bat	/^:findJavaFromJavaHome$/;"	l
+findTabs	build/reports/tests/test/js/report.js	/^    function findTabs(container) {$/;"	f
+findTitles	build/reports/tests/test/js/report.js	/^    function findTitles(tabs) {$/;"	f
+forAllCodeBlocks	build/reports/tests/test/js/report.js	/^    function forAllCodeBlocks(operation) {$/;"	f
+generateJsonHeader	src/main/java/jy/demo/api/ApiClient.java	/^    default Map<String, String> generateJsonHeader(){$/;"	m	interface:ApiClient
+generateUrlEncodedHeader	src/main/java/jy/demo/api/ApiClient.java	/^    default Map<String, String> generateUrlEncodedHeader(){$/;"	m	interface:ApiClient
+getCheckBox	build/reports/tests/test/js/report.js	/^    function getCheckBox() {$/;"	f
+getClassAttribute	build/reports/tests/test/js/report.js	/^    function getClassAttribute(element) {$/;"	f
+getLabelForCheckBox	build/reports/tests/test/js/report.js	/^    function getLabelForCheckBox() {$/;"	f
+grantType	src/main/java/jy/demo/dto/KakaoOAuthDto.java	/^        private String grantType = "authorization_code";$/;"	f	class:KakaoOAuthDto	file:
+gson	src/main/java/jy/demo/util/JsonUtil.java	/^    Gson gson = new GsonBuilder()$/;"	f	class:JsonUtil
+initControls	build/reports/tests/test/js/report.js	/^    function initControls() {$/;"	f
+initTabs	build/reports/tests/test/js/report.js	/^    function initTabs() {$/;"	f
+jsonUtil	src/main/java/jy/demo/api/WebClientImpl.java	/^    private final JsonUtil jsonUtil;$/;"	f	class:WebClientImpl	file:
+jy.demo	src/main/java/jy/demo/CustomautoApplication.java	/^package jy.demo;$/;"	p
+jy.demo	src/test/java/jy/demo/CustomautoApplicationTests.java	/^package jy.demo;$/;"	p
+jy.demo.api	src/main/java/jy/demo/api/ApiClient.java	/^package jy.demo.api;$/;"	p
+jy.demo.api	src/main/java/jy/demo/api/ChatGPTClient.java	/^package jy.demo.api;$/;"	p
+jy.demo.api	src/main/java/jy/demo/api/DalaiClient.java	/^package jy.demo.api;$/;"	p
+jy.demo.api	src/main/java/jy/demo/api/WebClientImpl.java	/^package jy.demo.api;$/;"	p
+jy.demo.config	src/main/java/jy/demo/config/BeanConifg.java	/^package jy.demo.config;$/;"	p
+jy.demo.config	src/main/java/jy/demo/config/CorsConfig.java	/^package jy.demo.config;$/;"	p
+jy.demo.controller	src/main/java/jy/demo/controller/AIController.java	/^package jy.demo.controller;$/;"	p
+jy.demo.controller	src/main/java/jy/demo/controller/AuthController.java	/^package jy.demo.controller;$/;"	p
+jy.demo.dto	src/main/java/jy/demo/dto/JsonConvertible.java	/^package jy.demo.dto;$/;"	p
+jy.demo.dto	src/main/java/jy/demo/dto/KakaoMsgDto.java	/^package jy.demo.dto;$/;"	p
+jy.demo.dto	src/main/java/jy/demo/dto/KakaoOAuthDto.java	/^package jy.demo.dto;$/;"	p
+jy.demo.service	src/main/java/jy/demo/service/DalaiServiceImpl.java	/^package jy.demo.service;$/;"	p
+jy.demo.service	src/main/java/jy/demo/service/KakaoMsgServiceImpl.java	/^package jy.demo.service;$/;"	p
+jy.demo.service	src/main/java/jy/demo/service/MessageService.java	/^package jy.demo.service;$/;"	p
+jy.demo.util	src/main/java/jy/demo/util/JsonUtil.java	/^package jy.demo.util;$/;"	p
+kakao	src/main/java/jy/demo/controller/AuthController.java	/^    public String kakao(@RequestParam("code") String code) {$/;"	m	class:AuthController
+kakaoMsgServiceImpl	src/main/java/jy/demo/controller/AuthController.java	/^    KakaoMsgServiceImpl kakaoMsgServiceImpl;$/;"	f	class:AuthController
+main	src/main/java/jy/demo/CustomautoApplication.java	/^	public static void main(String[] args) {$/;"	m	class:CustomautoApplication
+mainEnd	gradlew.bat	/^:mainEnd$/;"	l
+mobileUrl	src/main/java/jy/demo/dto/KakaoMsgDto.java	/^    private String mobileUrl;$/;"	f	class:KakaoMsgDto	file:
+model	src/main/java/jy/demo/api/ChatGPTClient.java	/^	private String model;$/;"	f	class:ChatGPTClient	file:
+objType	src/main/java/jy/demo/dto/KakaoMsgDto.java	/^    private String objType;$/;"	f	class:KakaoMsgDto	file:
+omega	gradlew.bat	/^:omega$/;"	l
+post	src/main/java/jy/demo/api/ApiClient.java	/^    Map<String, String> post(String uri, JsonConvertible body, Map<String, String> headers);$/;"	m	interface:ApiClient
+post	src/main/java/jy/demo/api/WebClientImpl.java	/^    public Map<String, String> post(String uri, JsonConvertible body, Map<String, String> headers) {$/;"	m	class:WebClientImpl
+post	src/main/java/jy/demo/api/WebClientImpl.java	/^    public Map<String, String> post(String uri, Map<String, String> body, Map<String, String> headers) {$/;"	m	class:WebClientImpl
+redirectUrl	src/main/java/jy/demo/dto/KakaoOAuthDto.java	/^        private String redirectUrl = "http:\/\/southoftheriver.synology.me:8081\/kakao\/callback";$/;"	f	class:KakaoOAuthDto	file:
+refrashToken	src/main/java/jy/demo/service/KakaoMsgServiceImpl.java	/^	public String refrashToken = "";$/;"	f	class:KakaoMsgServiceImpl
+removeClass	build/reports/tests/test/js/report.js	/^    function removeClass(element, classValue) {$/;"	f
+requestAccessToken	src/main/java/jy/demo/service/KakaoMsgServiceImpl.java	/^	public boolean requestAccessToken(String code)  {$/;"	m	class:KakaoMsgServiceImpl
+run	src/main/java/jy/demo/CustomautoApplication.java	/^	public CommandLineRunner run() {$/;"	m	class:CustomautoApplication
+select	build/reports/tests/test/js/report.js	/^    function select(i) {$/;"	c
+sendMessage	src/main/java/jy/demo/service/KakaoMsgServiceImpl.java	/^	public boolean sendMessage(KakaoMsgDto msgDto) {$/;"	m	class:KakaoMsgServiceImpl
+sendMessage	src/main/java/jy/demo/service/MessageService.java	/^	String sendMessage(String msg);$/;"	m	interface:MessageService
+sendPrompt	src/main/java/jy/demo/api/DalaiClient.java	/^    String sendPrompt(@RequestParam("q") String q);$/;"	m	interface:DalaiClient
+sendRequest	src/main/java/jy/demo/api/ChatGPTClient.java	/^    public String sendRequest(String userPrompt, String systemPrompt) {$/;"	m	class:ChatGPTClient
+sendRequest	src/main/java/jy/demo/service/DalaiServiceImpl.java	/^	public String sendRequest(String prompt) {$/;"	m	class:DalaiServiceImpl
+successCheck	src/main/java/jy/demo/service/KakaoMsgServiceImpl.java	/^	public boolean successCheck(String resultCode) {$/;"	m	class:KakaoMsgServiceImpl
+switchTab	build/reports/tests/test/js/report.js	/^    function switchTab() {$/;"	f
+test	src/main/java/jy/demo/controller/AuthController.java	/^    public String test(@RequestHeader Map<String, String> header, @RequestBody Map<String, String> body) {$/;"	m	class:AuthController
+text	src/main/java/jy/demo/dto/KakaoMsgDto.java	/^    private String text;$/;"	f	class:KakaoMsgDto	file:
+toEncodedUrl	src/main/java/jy/demo/util/JsonUtil.java	/^    public String toEncodedUrl(JsonConvertible dto) {$/;"	m	class:JsonUtil
+toJson	src/main/java/jy/demo/util/JsonUtil.java	/^    public String toJson(JsonConvertible dto) {$/;"	m	class:JsonUtil
+toMap	src/main/java/jy/demo/util/JsonUtil.java	/^    public Map<String, String> toMap(JsonConvertible dto) {$/;"	m	class:JsonUtil
+toMap	src/main/java/jy/demo/util/JsonUtil.java	/^    public Map<String, String> toMap(String json) {$/;"	m	class:JsonUtil
+toggleLineWrapping	build/reports/tests/test/js/report.js	/^    function toggleLineWrapping() {$/;"	f
+warn	gradlew	/^warn () {$/;"	f
+webClient	src/main/java/jy/demo/api/WebClientImpl.java	/^	private final WebClient webClient;$/;"	f	class:WebClientImpl	file:
+webClient	src/main/java/jy/demo/config/BeanConifg.java	/^    public WebClient webClient(){$/;"	m	class:BeanConifg
+webUrl	src/main/java/jy/demo/dto/KakaoMsgDto.java	/^    private String webUrl;$/;"	f	class:KakaoMsgDto	file:
+window.onload	build/reports/tests/test/js/report.js	/^    window.onload = function() {$/;"	f
