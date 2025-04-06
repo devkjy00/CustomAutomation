@@ -14,7 +14,6 @@ import jy.demo.util.JsonUtil;
 @Service
 public class KakaoMsgServiceImpl implements MessageService{
 	// TODO - bean 생성 시점에(생성자에서) 토큰 받아오도록 수정하기
-
     // private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String AUTH_URL = "https://kauth.kakao.com/oauth/token";
@@ -86,7 +85,7 @@ public class KakaoMsgServiceImpl implements MessageService{
 			Map<String, Object> response = JsonUtil.toMap(result);
 			Object resultCode = response.get("result_code");
 
-			if (resultCode != null && "0".equals(resultCode.toString())) {
+			if (resultCode != null && "0.0".equals(resultCode.toString())) {
 				return SEND_SUCCESS_MSG;
 			} else {
 				Object errorMsg = response.get("msg");

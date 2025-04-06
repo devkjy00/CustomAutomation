@@ -21,8 +21,6 @@ public class MessageController {
 
     @GetMapping("/send/kakaoMsg")
     public String sendMessage(@RequestParam("text") String text) {
-        kakaoMsgService.sendMessage(text);
-
-        return "Message sent successfully";
+        return kakaoMsgService.sendMessage(text); 
     }
 }

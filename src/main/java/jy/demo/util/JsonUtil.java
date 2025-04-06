@@ -62,6 +62,7 @@ public class JsonUtil {
 
     public String createKakaoSendMsgJson(String text) {
         Map<String, Object> msg = Map.of(
+            "template_object", Map.of(
             "object_type", "text",
             "text", text,
             "link", Map.of(
@@ -69,6 +70,7 @@ public class JsonUtil {
                 "mobile_web_url", "https://developers.kakao.com"
             ),
             "button_title", "바로 확인"
+            )
         );
 
         return gson.toJson(msg);

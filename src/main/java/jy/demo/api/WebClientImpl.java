@@ -42,8 +42,8 @@ public class WebClientImpl implements ApiClient {
 
         if (headers.containsKey(CONTENT_TYPE) && headers.get(CONTENT_TYPE).equals(APP_TYPE_URL_ENCODED)) {
             // URL encoded form data 처리
-            // MultiValueMap<String, > formData = convertToMultiValueMap(flattenedMap);
-            // headersSpec.body(BodyInserters.fromFormData(formData));
+            MultiValueMap<String, String> formData = convertToMultiValueMap(JsonUtil.toMap(body));
+            headersSpec.bodyValue(formData);
         } else {
             // 기본적으로 JSON으로 처리
             headersSpec.bodyValue(body);
@@ -69,7 +69,6 @@ public class WebClientImpl implements ApiClient {
     private Map<String, String> toStringMap(Map<String, Object> headers) {
         Map<String, String> headersStr = new HashMap<>();
 
-
         headers.entrySet().stream()
         .forEach(entry -> {
             if (entry.getValue() instanceof String) {
@@ -81,9 +80,9 @@ public class WebClientImpl implements ApiClient {
         return headersStr;
     }
 
-    private MultiValueMap<String, Object> convertToMultiValueMap(Map<String, Object> map){
-        MultiValueMap<String, Object> multiValueMap = new LinkedMultiValueMap<>();
-        map.forEach(multiValueMap::add);
+    private MultiValueMap<String, String> convertToMultiValueMap(Map<String, Object> map) {
+        MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
+        toStringMap(map).forEach(multiValueMap::add);
         return multiValueMap;
     }
 }
