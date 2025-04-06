@@ -2,7 +2,7 @@ package jy.demo.dto;
 
 import jy.demo.util.HTTPStatic;
 
-public class KakaoOAuthDto implements JsonConvertible{
+public class KakaoOAuthDto implements JsonConvertible {
 
         private String code = "";
         private String grantType = HTTPStatic.KAKAO_OAUTH_GRANT_TYPE;
@@ -14,5 +14,3 @@ public class KakaoOAuthDto implements JsonConvertible{
             this.clientId = clientId;
         }
 }
-
-

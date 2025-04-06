@@ -11,14 +11,14 @@ public interface ApiClient {
 
     String post(String uri, String body, String headers);
 
-    default Map<String, String> generateUrlEncodedHeader(){
-        Map<String, String> headers = new HashMap<>();
+    default Map<String, Object> generateUrlEncodedHeader(){
+        Map<String, Object> headers = new HashMap<>();
         headers.put(CONTENT_TYPE, APP_TYPE_URL_ENCODED);
         return headers;
     }
 
-    default Map<String, String> generateJsonHeader(){
-        Map<String, String> headers = new HashMap<>();
+    default Map<String, Object> generateJsonHeader(){
+        Map<String, Object> headers = new HashMap<>();
         headers.put(CONTENT_TYPE, APP_TYPE_JSON);
         return headers;
     };

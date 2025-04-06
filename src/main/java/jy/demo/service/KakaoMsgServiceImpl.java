@@ -38,10 +38,8 @@ public class KakaoMsgServiceImpl implements MessageService{
     }
 
 	public boolean requestAccessToken(String code)  {
-		
-
 		KakaoOAuthDto body = new KakaoOAuthDto(code, clientId);
-		Map<String, String> result;
+		Map<String, Object> result;
 		try {
 			String response = apiClient.post(AUTH_URL, JsonUtil.toJson(JsonUtil.toMap(body)), JsonUtil.toJson(apiClient.generateUrlEncodedHeader()));
 			result = JsonUtil.toMap(response);
@@ -50,8 +48,8 @@ public class KakaoMsgServiceImpl implements MessageService{
 			return false;
 		}
 
-		accessToken = result.get("access_token");
-		refrashToken = result.get("refresh_token");
+		accessToken = result.get("access_token").toString();
+		refrashToken = result.get("refresh_token").toString();
 
 		if (accessToken.isEmpty() || refrashToken.isEmpty()) {
 			// throw new Exception("토큰 발급에 실패했습니다.");
@@ -85,7 +83,7 @@ public class KakaoMsgServiceImpl implements MessageService{
 		}
 
 		try {
-			Map<String, Object> response = JsonUtil.parseResponse(result);
+			Map<String, Object> response = JsonUtil.toMap(result);
 			Object resultCode = response.get("result_code");
 
 			if (resultCode != null && "0".equals(resultCode.toString())) {

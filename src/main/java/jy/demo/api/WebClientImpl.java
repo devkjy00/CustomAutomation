@@ -1,12 +1,12 @@
 package jy.demo.api;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
 
@@ -42,8 +42,8 @@ public class WebClientImpl implements ApiClient {
 
         if (headers.containsKey(CONTENT_TYPE) && headers.get(CONTENT_TYPE).equals(APP_TYPE_URL_ENCODED)) {
             // URL encoded form data 처리
-            MultiValueMap<String, String> formData = convertToMultiValueMap(JsonUtil.toMap(body));
-            headersSpec.body(BodyInserters.fromFormData(formData));
+            // MultiValueMap<String, > formData = convertToMultiValueMap(flattenedMap);
+            // headersSpec.body(BodyInserters.fromFormData(formData));
         } else {
             // 기본적으로 JSON으로 처리
             headersSpec.bodyValue(body);
@@ -52,16 +52,37 @@ public class WebClientImpl implements ApiClient {
         return headersSpec;
     }
 
-    public String post(String uri, JsonConvertible body, Map<String, String> headers) {
-        return post(uri, JsonUtil.toJson(body), headers);
+    public String postWithObjectHeaders(String uri, String body, Map<String, Object> headers) {
+        Map<String, String> headersStr = toStringMap(headers);
+        return post(uri, body, headersStr);
     }
 
+    public String post(String uri, JsonConvertible body, Map<String, Object> headers) {
+        return postWithObjectHeaders(uri, JsonUtil.toJson(body), headers);
+    }
+
+    @Override
     public String post(String uri, String body, String headers) { 
-        return post(uri, body, JsonUtil.toMap(headers));
+        return postWithObjectHeaders(uri, body, JsonUtil.toMap(headers));
     }
 
-    private MultiValueMap<String, String> convertToMultiValueMap(Map<String, String> map){
-        MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
+    private Map<String, String> toStringMap(Map<String, Object> headers) {
+        Map<String, String> headersStr = new HashMap<>();
+
+
+        headers.entrySet().stream()
+        .forEach(entry -> {
+            if (entry.getValue() instanceof String) {
+                headersStr.put(entry.getKey(), (String) entry.getValue());
+            } else if(entry.getValue() instanceof Map) {
+                headersStr.put(entry.getKey(), JsonUtil.toJson((Map<String, Object>) entry.getValue()));
+            }
+        });
+        return headersStr;
+    }
+
+    private MultiValueMap<String, Object> convertToMultiValueMap(Map<String, Object> map){
+        MultiValueMap<String, Object> multiValueMap = new LinkedMultiValueMap<>();
         map.forEach(multiValueMap::add);
         return multiValueMap;
     }
