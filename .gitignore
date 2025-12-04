@@ -36,5 +36,13 @@ out/
 ### VS Code ###
 .vscode/
 
+### Node.js ###
+node_modules/
+package-lock.json
+
+### Sensitive files ###
+.env
+kakao-tokens.json
+logs/
 
 application.yml
