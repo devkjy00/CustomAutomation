@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import feign.Headers;
 
-@FeignClient(name = "dalaiClient", url = "http://southoftheriver.synology.me:3000")
+@FeignClient(name = "dalaiClient", url = "http://localhost:3000")
 public interface DalaiClient {
     // @PostMapping(value = "/refactoring", consumes = "application/json")
     // @Headers("Content-Type: application/json")

@@ -4,7 +4,23 @@
 
 ## 📚 문서 목록
 
-### 1. [KAKAO-AUTO-LOGIN-GUIDE.md](./KAKAO-AUTO-LOGIN-GUIDE.md)
+### 1. [SCHEDULER-GUIDE.md](./SCHEDULER-GUIDE.md)
+**정기 메시지 스케줄러 가이드**
+
+- 1시간마다 AI 응답을 카카오톡으로 자동 전송
+- Spring @Scheduled 기반 스케줄링
+- 8가지 테마별 시간대 자동 선택
+- 수동 테스트 및 커스텀 테마 추가
+
+**주요 내용:**
+- ✅ 시간대별 테마 자동 선택
+- ✅ Dalai AI 연동
+- ✅ Cron 표현식 설정
+- ✅ API 테스트 엔드포인트
+
+---
+
+### 2. [KAKAO-AUTO-LOGIN-GUIDE.md](./KAKAO-AUTO-LOGIN-GUIDE.md)
 **카카오 로그인 자동화 완벽 가이드**
 
 - 시스템 아키텍처 및 플로우 다이어그램
@@ -21,7 +37,7 @@
 
 ---
 
-### 2. [KAKAO-LOGIN-SETUP.md](./KAKAO-LOGIN-SETUP.md)
+### 3. [KAKAO-LOGIN-SETUP.md](./KAKAO-LOGIN-SETUP.md)
 **카카오 로그인 초기 설정 가이드**
 
 - Playwright 기반 자동 로그인 설정 방법
@@ -38,7 +54,7 @@
 
 ---
 
-### 3. [GET-KAKAO-TOKEN.md](./GET-KAKAO-TOKEN.md)
+### 4. [GET-KAKAO-TOKEN.md](./GET-KAKAO-TOKEN.md)
 **카카오 토큰 발급 가이드**
 
 - 카카오 로그인을 자동화하는 3가지 방법
@@ -54,7 +70,7 @@
 
 ---
 
-### 4. [AUTO-START-README.md](./AUTO-START-README.md)
+### 5. [AUTO-START-README.md](./AUTO-START-README.md)
 **서버 자동 시작 및 통합 가이드**
 
 - 서버 시작 시 자동 작업 수행
@@ -76,14 +92,17 @@
 1. **[KAKAO-LOGIN-SETUP.md](./KAKAO-LOGIN-SETUP.md)** - 초기 설정
 2. **[GET-KAKAO-TOKEN.md](./GET-KAKAO-TOKEN.md)** - 토큰 발급 방법
 3. **[AUTO-START-README.md](./AUTO-START-README.md)** - 서버 자동화 구성
+4. **[SCHEDULER-GUIDE.md](./SCHEDULER-GUIDE.md)** - 정기 메시지 설정
 
 ### 문제가 발생한 경우
 1. **[KAKAO-AUTO-LOGIN-GUIDE.md](./KAKAO-AUTO-LOGIN-GUIDE.md)** - 트러블슈팅 및 에러 해결
 2. **[KAKAO-LOGIN-SETUP.md](./KAKAO-LOGIN-SETUP.md)** - 설정 관련 문제
+3. **[SCHEDULER-GUIDE.md](./SCHEDULER-GUIDE.md)** - 스케줄러 문제 해결
 
 ### 구현 이해를 위한 경우
 1. **[KAKAO-AUTO-LOGIN-GUIDE.md](./KAKAO-AUTO-LOGIN-GUIDE.md)** - 전체 아키텍처 및 플로우
 2. **[AUTO-START-README.md](./AUTO-START-README.md)** - 서버 통합 구현
+3. **[SCHEDULER-GUIDE.md](./SCHEDULER-GUIDE.md)** - 스케줄러 아키텍처
 
 ---
 
@@ -93,6 +112,7 @@
 CustomAutomation/
 ├── docs/                           # 📚 문서 디렉토리
 │   ├── README.md                   # 이 파일
+│   ├── SCHEDULER-GUIDE.md          # 정기 메시지 스케줄러 가이드
 │   ├── KAKAO-AUTO-LOGIN-GUIDE.md   # 자동화 완벽 가이드
 │   ├── KAKAO-LOGIN-SETUP.md        # 초기 설정 가이드
 │   ├── GET-KAKAO-TOKEN.md          # 토큰 발급 가이드
