@@ -1,48 +1,25 @@
-HELP.md
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-### VS Code ###
-.vscode/
-
-### Node.js ###
-node_modules/
-package-lock.json
-
-### Sensitive files ###
+# Environment variables
 .env
-kakao-tokens.json
-logs/
+AI/my-project/.env
 
-application.yml
+# Logs
+AI/my-project/logs/*.log
+
+# Dependencies
+node_modules/
+AI/my-project/node_modules/
+MCP/node_modules/
+
+# Build outputs
+CustomAutomation/build/
+CustomAutomation/.gradle/
+MCP/dist/
+
+# IDE
+.DS_Store
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.swp
