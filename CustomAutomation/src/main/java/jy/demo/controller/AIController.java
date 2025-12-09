@@ -55,11 +55,12 @@ public class AIController {
 	/**
 	 * 웹 검색 + AI 응답 + Slack 전송
 	 * 자동으로 웹 검색을 수행하고 최신 정보를 기반으로 AI 응답 생성 후 Slack으로 전송
+	 * 기본값: 자율 에이전트 사용 (agent=true)
 	 */
 	@GetMapping("/ai/search")
 	public String doAIWithSearch(
 			@RequestParam("prompt") String prompt,
-			@RequestParam(value = "agent", defaultValue = "false") boolean useAgent) {
+			@RequestParam(value = "agent", defaultValue = "true") boolean useAgent) {
 		try {
 			logger.info("=== AI 웹 검색 요청 ===");
 			logger.info("질문: {}", prompt);

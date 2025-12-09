@@ -57,8 +57,8 @@ public class ScheduledMessageService {
             String rawResponse;
 
             if (theme.isRequiresWebSearch()) {
-                logger.info("웹 검색 모드로 AI 호출");
-                rawResponse = dalaiClient.sendPromptWithSearch(theme.getPrompt(), true);
+                logger.info("🤖 자율 에이전트 모드로 AI 호출");
+                rawResponse = dalaiClient.sendPromptWithSearchAgent(theme.getPrompt(), true, true);
             } else {
                 rawResponse = dalaiClient.sendPrompt(theme.getPrompt());
             }
@@ -103,10 +103,19 @@ public class ScheduledMessageService {
 
             ThemePrompt theme = themePromptService.getRandomTheme();
             logger.info("테스트 테마: {}", theme.getTheme());
+            logger.info("웹 검색 필요 여부: {}", theme.isRequiresWebSearch());
             logger.debug("테스트 프롬프트: {}", theme.getPrompt());
 
             long startTime = System.currentTimeMillis();
-            String rawResponse = dalaiClient.sendPrompt(theme.getPrompt());
+            String rawResponse;
+
+            if (theme.isRequiresWebSearch()) {
+                logger.info("🤖 자율 에이전트 모드로 AI 호출");
+                rawResponse = dalaiClient.sendPromptWithSearchAgent(theme.getPrompt(), true, true);
+            } else {
+                rawResponse = dalaiClient.sendPrompt(theme.getPrompt());
+            }
+
             long endTime = System.currentTimeMillis();
 
             logger.info("AI 응답 수신 완료 (소요시간: {}ms)", endTime - startTime);
@@ -157,15 +166,16 @@ public class ScheduledMessageService {
     }
 
     /**
-     * 수동 실행용 메서드
+     * 수동 실행용 메서드 - 항상 자율 에이전트 사용
      */
     public String sendManualMessage(String customPrompt) {
         try {
-            logger.info("수동 메시지 전송 시작");
+            logger.info("🤖 수동 메시지 전송 시작 (자율 에이전트 모드)");
             logger.debug("커스텀 프롬프트: {}", customPrompt);
 
             long startTime = System.currentTimeMillis();
-            String rawResponse = dalaiClient.sendPrompt(customPrompt);
+            // 수동 실행은 항상 자율 에이전트 사용
+            String rawResponse = dalaiClient.sendPromptWithSearchAgent(customPrompt, true, true);
             long endTime = System.currentTimeMillis();
 
             logger.info("AI 응답 수신 완료 (소요시간: {}ms)", endTime - startTime);

@@ -19,21 +19,34 @@ class AutonomousSearchAgent {
    * 자율 탐색 시작
    */
   async search(userQuery) {
-    console.log('[Agent] Starting autonomous search for:', userQuery);
+    console.log('='.repeat(80));
+    console.log('[Agent] 🤖 AUTONOMOUS SEARCH SESSION STARTED');
+    console.log('[Agent] Query:', userQuery);
+    console.log('='.repeat(80));
     this.visitedUrls.clear();
 
     // Phase 1: AI가 검색 계획 수립
+    console.log('\n[Agent] 📋 PHASE 1: Planning Search Strategy');
+    const planStartTime = Date.now();
     const searchPlan = await this.planSearch(userQuery);
-    console.log('[Agent] Search plan:', searchPlan);
+    console.log(`[Agent] ✓ Search plan created (${Date.now() - planStartTime}ms)`);
+    console.log('[Agent]   - Keywords:', searchPlan.keywords);
+    console.log('[Agent]   - Target Sites:', searchPlan.targetSites.join(', ') || 'None specified');
+    console.log('[Agent]   - Information Type:', searchPlan.informationType);
+    console.log('[Agent]   - Estimated Depth:', searchPlan.estimatedDepth);
 
     // Phase 2: 검색 실행
+    console.log('\n[Agent] 🔍 PHASE 2: Multi-Source Web Search');
+    const searchStartTime = Date.now();
     const searchResults = await webSearchService.searchMultiSource(
       searchPlan.keywords,
       10 // 더 많은 결과 가져오기
     );
+    console.log(`[Agent] ✓ Found ${searchResults.length} results from 5 sources (${Date.now() - searchStartTime}ms)`);
 
     if (!searchResults || searchResults.length === 0) {
-      console.log('[Agent] No search results found');
+      console.log('[Agent] ❌ No search results found');
+      console.log('='.repeat(80));
       return {
         success: false,
         gatheredInfo: [],
@@ -42,20 +55,28 @@ class AutonomousSearchAgent {
     }
 
     // Phase 3: AI가 링크 우선순위 결정
+    console.log('\n[Agent] 🎯 PHASE 3: Link Prioritization');
+    const priorityStartTime = Date.now();
     const prioritizedLinks = await this.prioritizeLinks(userQuery, searchResults, searchPlan);
-    console.log('[Agent] Prioritized links:', prioritizedLinks.map(l => l.url));
+    console.log(`[Agent] ✓ Prioritized ${prioritizedLinks.length} links (${Date.now() - priorityStartTime}ms)`);
+    prioritizedLinks.forEach((link, i) => {
+      console.log(`[Agent]   ${i+1}. [Score: ${link.priorityScore.toFixed(2)}] ${link.title}`);
+      console.log(`[Agent]      ${link.url}`);
+    });
 
     // Phase 4: 자율적으로 링크 탐색
+    console.log('\n[Agent] 🌐 PHASE 4: Autonomous Web Exploration');
     const gatheredInfo = [];
     let satisfactionLevel = 0;
+    const explorationStartTime = Date.now();
 
     for (let depth = 0; depth < this.maxDepth && satisfactionLevel < 0.8; depth++) {
-      console.log(`[Agent] Exploration depth ${depth + 1}/${this.maxDepth}`);
-      console.log(`[Agent] Pages visited so far: ${this.visitedUrls.size}/${this.maxTotalPages}`);
+      console.log(`\n[Agent] --- Depth ${depth + 1}/${this.maxDepth} ---`);
+      console.log(`[Agent] Progress: ${this.visitedUrls.size}/${this.maxTotalPages} pages visited, ${gatheredInfo.length} relevant pages found`);
 
       // 전체 방문 페이지 수 제한 확인
       if (this.visitedUrls.size >= this.maxTotalPages) {
-        console.log('[Agent] Reached maximum total pages limit');
+        console.log('[Agent] ⚠️ Reached maximum total pages limit');
         break;
       }
 
@@ -63,20 +84,26 @@ class AutonomousSearchAgent {
       const remainingSlots = this.maxTotalPages - this.visitedUrls.size;
       const linksToProcess = linksToVisit.slice(0, remainingSlots);
 
-      console.log(`[Agent] Will visit ${linksToProcess.length} links in this depth`);
+      console.log(`[Agent] Planning to visit ${linksToProcess.length} links in this depth`);
 
       for (const linkInfo of linksToProcess) {
         if (this.visitedUrls.has(linkInfo.url)) continue;
 
-        console.log(`[Agent] Visiting [${this.visitedUrls.size + 1}/${this.maxTotalPages}]: ${linkInfo.url}`);
+        console.log(`\n[Agent] 🔗 [${this.visitedUrls.size + 1}/${this.maxTotalPages}] Visiting: ${linkInfo.title}`);
+        console.log(`[Agent]    URL: ${linkInfo.url}`);
+
+        const extractStartTime = Date.now();
         const pageContent = await this.extractPageContent(linkInfo.url);
 
         if (pageContent) {
           this.visitedUrls.add(linkInfo.url);
+          console.log(`[Agent] ✓ Content extracted (${pageContent.length} chars, ${Date.now() - extractStartTime}ms)`);
 
           // AI가 추출된 내용의 관련성 평가
+          const evalStartTime = Date.now();
           const relevance = await this.evaluateRelevance(userQuery, pageContent);
-          console.log(`[Agent] Relevance score: ${relevance.score}`);
+          console.log(`[Agent] 📊 Relevance: ${relevance.score.toFixed(2)} (${Date.now() - evalStartTime}ms)`);
+          console.log(`[Agent]    Insights: ${relevance.insights}`);
 
           if (relevance.score > 0.4) { // 임계값 낮춤 (0.5 → 0.4)
             gatheredInfo.push({
@@ -86,42 +113,76 @@ class AutonomousSearchAgent {
               relevance: relevance.score,
               insights: relevance.insights
             });
+            console.log(`[Agent] ✅ Page added to knowledge base (${gatheredInfo.length} total)`);
+          } else {
+            console.log(`[Agent] ⏭️ Page skipped (relevance too low)`);
           }
+        } else {
+          console.log(`[Agent] ❌ Failed to extract content (${Date.now() - extractStartTime}ms)`);
         }
 
         // 현재까지 수집한 정보의 충분성 평가
         if (gatheredInfo.length > 0 && gatheredInfo.length % 3 === 0) { // 3개마다 평가
+          console.log(`\n[Agent] 🎓 Evaluating information sufficiency...`);
+          const suffStartTime = Date.now();
           const sufficiency = await this.evaluateSufficiency(userQuery, gatheredInfo);
           satisfactionLevel = sufficiency.score;
-          console.log(`[Agent] Sufficiency score: ${satisfactionLevel}`);
+          console.log(`[Agent] 📈 Sufficiency: ${(satisfactionLevel * 100).toFixed(0)}% (${Date.now() - suffStartTime}ms)`);
+
+          if (sufficiency.missing) {
+            console.log(`[Agent]    Missing: ${sufficiency.missing}`);
+          }
 
           if (satisfactionLevel >= 0.8) {
-            console.log('[Agent] Sufficient information gathered');
+            console.log('[Agent] ✅ Sufficient information gathered! Stopping exploration.');
             break;
+          } else {
+            console.log('[Agent] ⚠️ More information needed. Continuing exploration...');
           }
         }
 
         // 전체 페이지 수 제한 확인
         if (this.visitedUrls.size >= this.maxTotalPages) {
-          console.log('[Agent] Reached maximum total pages limit during iteration');
+          console.log('[Agent] ⚠️ Reached maximum total pages limit during iteration');
           break;
         }
       }
 
       // 정보가 부족하면 새로운 검색 전략 수립
       if (satisfactionLevel < 0.8 && depth < this.maxDepth - 1) {
-        console.log('[Agent] Insufficient information, replanning...');
+        console.log(`\n[Agent] 🔄 REPLANNING: Information insufficient (${(satisfactionLevel * 100).toFixed(0)}%)`);
+        const replanStartTime = Date.now();
         const newPlan = await this.replanSearch(userQuery, gatheredInfo);
+        console.log(`[Agent] ✓ New strategy: "${newPlan.keywords}" (${Date.now() - replanStartTime}ms)`);
+
         const newResults = await webSearchService.searchMultiSource(newPlan.keywords, 10);
+        console.log(`[Agent] ✓ Found ${newResults.length} new results`);
+
         const newLinks = await this.prioritizeLinks(userQuery, newResults, newPlan);
+        console.log(`[Agent] ✓ Prioritized ${newLinks.length} new links`);
 
         // 새로운 링크를 우선순위 목록에 추가
-        prioritizedLinks.push(...newLinks.filter(link => !this.visitedUrls.has(link.url)));
+        const addedLinks = newLinks.filter(link => !this.visitedUrls.has(link.url));
+        prioritizedLinks.push(...addedLinks);
+        console.log(`[Agent] ✓ Added ${addedLinks.length} unvisited links to queue`);
       }
     }
 
+    console.log(`\n[Agent] ✓ Exploration complete (${Date.now() - explorationStartTime}ms)`);
+    console.log(`[Agent] Summary: Visited ${this.visitedUrls.size} pages, gathered ${gatheredInfo.length} relevant pages`);
+
     // Phase 5: 수집된 정보로 최종 답변 생성
+    console.log('\n[Agent] 📝 PHASE 5: Synthesizing Final Answer');
+    const synthStartTime = Date.now();
     const finalAnswer = await this.synthesizeAnswer(userQuery, gatheredInfo);
+    console.log(`[Agent] ✓ Answer synthesized (${Date.now() - synthStartTime}ms)`);
+
+    console.log('='.repeat(80));
+    console.log('[Agent] 🎉 AUTONOMOUS SEARCH SESSION COMPLETED');
+    console.log(`[Agent] Success: ${gatheredInfo.length > 0}`);
+    console.log(`[Agent] Sufficiency: ${(satisfactionLevel * 100).toFixed(0)}%`);
+    console.log(`[Agent] Total pages visited: ${this.visitedUrls.size}`);
+    console.log('='.repeat(80));
 
     return {
       success: gatheredInfo.length > 0,

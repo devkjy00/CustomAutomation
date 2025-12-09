@@ -9,7 +9,8 @@ const autonomousSearchAgent = require('../services/autonomousSearchAgent');
 router.get('/', async function(req, res, next) {
   const q = req.query.q;
   const enableSearch = req.query.search === 'true' || req.query.search === '1';
-  const useAgent = req.query.agent === 'true' || req.query.agent === '1'; // 새로운 파라미터
+  // 기본값을 true로 변경 - 명시적으로 false가 아니면 항상 agent 사용
+  const useAgent = req.query.agent !== 'false' && req.query.agent !== '0';
 
   try {
     let finalPrompt = q;
