@@ -87,7 +87,7 @@ ${'='.repeat(80)}`;
   writeAILog(promptLog);
 
   const response = await axios.post('http://localhost:11434/api/generate', {
-    model: 'gemma3:27b',
+    model: 'qwen2.5:14b',
     prompt: prompt,
     stream: false
   });
@@ -340,5 +340,6 @@ module.exports = {
   filterSearchResults,
   generateFinalAnswer,
   loadPromptTemplate,
-  fillTemplate
+  fillTemplate,
+  callAI  // autonomousSearchAgent에서 사용
 };

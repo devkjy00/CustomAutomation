@@ -3,28 +3,45 @@ var router = express.Router();
 const webSearchService = require('../services/webSearchService');
 const ragService = require('../services/ragService');
 const aiService = require('../services/aiService');
+const autonomousSearchAgent = require('../services/autonomousSearchAgent');
 
-/* GET users listing - AI with web search and RAG */
+/* GET users listing - AI with autonomous agent or legacy search */
 router.get('/', async function(req, res, next) {
   const q = req.query.q;
   const enableSearch = req.query.search === 'true' || req.query.search === '1';
+  const useAgent = req.query.agent === 'true' || req.query.agent === '1'; // 새로운 파라미터
 
   try {
     let finalPrompt = q;
 
-    // If search is enabled, perform web search and add context
+    // If search is enabled
     if (enableSearch) {
       console.log('[AI] Web search enabled for query:', q);
 
-      // Generate optimized search keywords using AI
+      if (useAgent) {
+        // 🤖 Use Autonomous Search Agent
+        console.log('[AI] Using autonomous search agent');
+        const agentResult = await autonomousSearchAgent.search(q);
+
+        if (agentResult.success) {
+          console.log(`[AI] Agent visited ${agentResult.visitedUrls.length} pages`);
+          console.log(`[AI] Satisfaction level: ${agentResult.satisfactionLevel}`);
+
+          // 에이전트가 이미 최종 답변을 생성했음
+          const answer = "answer : " + agentResult.finalAnswer + "<end>";
+          return res.send(answer);
+        } else {
+          console.log('[AI] Agent failed to find information, falling back to legacy search');
+        }
+      }
+
+      // Legacy search (기존 로직 유지 - fallback용)
       let searchKeywords = await aiService.generateSearchKeywords(q);
       console.log('[AI] Generated search keywords:', searchKeywords);
 
-      // Analyze which websites would be best for this query
       let targetWebsites = await aiService.analyzeBestWebsites(q, searchKeywords);
       console.log('[AI] Target websites:', targetWebsites);
 
-      // Iterative search with quality verification (max 3 attempts)
       let searchResults = null;
       let filteredResults = null;
       let context = null;
@@ -36,14 +53,10 @@ router.get('/', async function(req, res, next) {
         searchAttempt++;
         console.log(`[AI] Search attempt ${searchAttempt}/${maxAttempts}`);
 
-        // Perform multi-source search
         searchResults = await webSearchService.searchMultiSource(searchKeywords, 5);
 
         if (searchResults && searchResults.length > 0) {
-          // Filter search results with AI before adding to RAG
           filteredResults = await aiService.filterSearchResults(searchResults, q, targetWebsites);
-
-          // Verify if filtered results contain the answer user needs
           const verification = await aiService.verifySearchQuality(q, filteredResults);
 
           console.log(`[AI] Search quality verification:`, verification);
@@ -51,28 +64,21 @@ router.get('/', async function(req, res, next) {
           if (verification.hasAnswer) {
             console.log('[AI] Search results contain required information');
             searchSuccess = true;
-
-            // Add filtered results to RAG knowledge base
             ragService.addSearchResults(searchKeywords, filteredResults);
-
-            // Get relevant context from RAG
             context = ragService.getContext(q, 3);
           } else {
             console.log(`[AI] Missing information: ${verification.missingInfo}`);
 
             if (searchAttempt < maxAttempts) {
-              // Generate alternative search strategy
               const alternativeSearch = await aiService.generateAlternativeSearch(q, verification.missingInfo, searchAttempt);
               console.log(`[AI] Alternative search: ${alternativeSearch.keywords}, targeting: ${alternativeSearch.sites.join(', ')}`);
 
               searchKeywords = alternativeSearch.keywords;
               targetWebsites = alternativeSearch.sites;
 
-              // Wait a bit before retry
               await new Promise(resolve => setTimeout(resolve, 1000));
             } else {
               console.log('[AI] Max attempts reached, using best available results');
-              // Use the last results even if incomplete
               ragService.addSearchResults(searchKeywords, filteredResults);
               context = ragService.getContext(q, 3);
             }
@@ -83,7 +89,6 @@ router.get('/', async function(req, res, next) {
         }
       }
 
-      // Add context to final prompt if web search was performed
       if (context) {
         finalPrompt = `다음 검색 결과를 참고하여 질문에 답변해주세요.
 

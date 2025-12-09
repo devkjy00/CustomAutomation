@@ -57,15 +57,18 @@ public class AIController {
 	 * 자동으로 웹 검색을 수행하고 최신 정보를 기반으로 AI 응답 생성 후 Slack으로 전송
 	 */
 	@GetMapping("/ai/search")
-	public String doAIWithSearch(@RequestParam("prompt") String prompt) {
+	public String doAIWithSearch(
+			@RequestParam("prompt") String prompt,
+			@RequestParam(value = "agent", defaultValue = "false") boolean useAgent) {
 		try {
 			logger.info("=== AI 웹 검색 요청 ===");
 			logger.info("질문: {}", prompt);
+			logger.info("자율 에이전트 사용: {}", useAgent);
 
 			long startTime = System.currentTimeMillis();
 
-			// 웹 검색 모드로 AI 호출 (search=true)
-			String rawResponse = dalaiClient.sendPromptWithSearch(prompt, true);
+			// 웹 검색 모드로 AI 호출 (agent 파라미터 추가)
+			String rawResponse = dalaiClient.sendPromptWithSearchAgent(prompt, true, useAgent);
 
 			long endTime = System.currentTimeMillis();
 			logger.info("AI 응답 완료 (소요시간: {}ms)", endTime - startTime);
@@ -77,7 +80,11 @@ public class AIController {
 
 			// Slack으로 전송
 			logger.info("Slack 메시지 전송 중...");
-			String slackResult = slackMsgService.sendRichMessage("🔍 AI 웹 검색 결과: " + prompt, cleanedResponse);
+			String emoji = useAgent ? "🤖" : "🔍";
+			String slackResult = slackMsgService.sendRichMessage(
+				emoji + " AI 웹 검색 결과: " + prompt,
+				cleanedResponse
+			);
 			logger.info("Slack 전송 결과: {}", slackResult);
 
 			return cleanedResponse;

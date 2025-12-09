@@ -159,23 +159,197 @@ class WebSearchService {
   }
 
   /**
-   * Multi-source search (Google + Naver)
-   * Enhanced with weather detection
+   * Search Bing
    */
-  async searchMultiSource(query, maxResults = 5) {
+  async searchBing(query, maxResults = 5) {
     try {
-      // Fall back to regular search
-      const [googleResults, naverResults] = await Promise.all([
-        this.searchGoogle(query, Math.ceil(maxResults / 2)),
-        this.searchNaver(query, Math.ceil(maxResults / 2))
+      console.log(`[WebSearch] Searching Bing for: ${query}`);
+
+      const searchUrl = `https://www.bing.com/search?q=${encodeURIComponent(query)}`;
+
+      const response = await axios.get(searchUrl, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+          'Accept-Language': 'ko-KR,ko;q=0.9',
+        },
+        responseEncoding: 'utf8'
+      });
+
+      const $ = cheerio.load(response.data);
+      const results = [];
+
+      $('.b_algo').each((index, element) => {
+        if (results.length >= maxResults) return false;
+
+        const titleElem = $(element).find('h2 a');
+        const title = titleElem.text().trim();
+        const link = titleElem.attr('href');
+        const snippet = $(element).find('.b_caption p').text().trim();
+
+        if (title && snippet) {
+          results.push({
+            title,
+            snippet,
+            link: link || '',
+            source: 'bing'
+          });
+        }
+      });
+
+      console.log(`[WebSearch] Found ${results.length} Bing results`);
+      return results;
+    } catch (error) {
+      console.error('[WebSearch] Bing Error:', error.message);
+      return [];
+    }
+  }
+
+  /**
+   * Search Brave Search
+   */
+  async searchBrave(query, maxResults = 5) {
+    try {
+      console.log(`[WebSearch] Searching Brave for: ${query}`);
+
+      const searchUrl = `https://search.brave.com/search?q=${encodeURIComponent(query)}`;
+
+      const response = await axios.get(searchUrl, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+          'Accept-Language': 'ko-KR,ko;q=0.9',
+        },
+        responseEncoding: 'utf8'
+      });
+
+      const $ = cheerio.load(response.data);
+      const results = [];
+
+      // Brave uses different selectors
+      $('div[data-type="web"]').each((index, element) => {
+        if (results.length >= maxResults) return false;
+
+        const titleElem = $(element).find('.title');
+        const title = titleElem.text().trim();
+        const link = $(element).find('a').attr('href');
+        const snippet = $(element).find('.snippet-description').text().trim();
+
+        if (title && snippet) {
+          results.push({
+            title,
+            snippet,
+            link: link || '',
+            source: 'brave'
+          });
+        }
+      });
+
+      console.log(`[WebSearch] Found ${results.length} Brave results`);
+      return results;
+    } catch (error) {
+      console.error('[WebSearch] Brave Error:', error.message);
+      return [];
+    }
+  }
+
+  /**
+   * Search Wikipedia (for factual/encyclopedia queries)
+   */
+  async searchWikipedia(query, maxResults = 3) {
+    try {
+      console.log(`[WebSearch] Searching Wikipedia for: ${query}`);
+
+      const searchUrl = `https://ko.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(query)}&limit=${maxResults}&format=json`;
+
+      const response = await axios.get(searchUrl, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (compatible; AISearchBot/1.0)',
+        },
+        responseEncoding: 'utf8'
+      });
+
+      const [, titles, snippets, urls] = response.data;
+      const results = [];
+
+      for (let i = 0; i < titles.length && i < maxResults; i++) {
+        if (titles[i] && snippets[i]) {
+          results.push({
+            title: titles[i],
+            snippet: snippets[i],
+            link: urls[i],
+            source: 'wikipedia'
+          });
+        }
+      }
+
+      console.log(`[WebSearch] Found ${results.length} Wikipedia results`);
+      return results;
+    } catch (error) {
+      console.error('[WebSearch] Wikipedia Error:', error.message);
+      return [];
+    }
+  }
+
+  /**
+   * Multi-source search (DuckDuckGo + Naver + Bing + Brave + Wikipedia)
+   */
+  async searchMultiSource(query, maxResults = 10) {
+    try {
+      console.log(`[WebSearch] Performing multi-source search with ${maxResults} max results`);
+
+      // Execute all searches in parallel
+      const [duckResults, naverResults, bingResults, braveResults, wikiResults] = await Promise.all([
+        this.searchGoogle(query, 5),  // DuckDuckGo
+        this.searchNaver(query, 5),    // Naver
+        this.searchBing(query, 5),     // Bing
+        this.searchBrave(query, 3),    // Brave
+        this.searchWikipedia(query, 2) // Wikipedia
       ]);
 
-      const allResults = [...googleResults, ...naverResults];
-      return allResults.slice(0, maxResults);
+      // Combine all results
+      const allResults = [
+        ...duckResults,
+        ...naverResults,
+        ...bingResults,
+        ...braveResults,
+        ...wikiResults
+      ];
+
+      console.log(`[WebSearch] Total results before deduplication: ${allResults.length}`);
+
+      // Remove duplicates based on title similarity
+      const uniqueResults = this.deduplicateResults(allResults);
+
+      console.log(`[WebSearch] Total unique results: ${uniqueResults.length}`);
+
+      return uniqueResults.slice(0, maxResults);
     } catch (error) {
       console.error('[WebSearch] Multi-source error:', error.message);
       return [];
     }
+  }
+
+  /**
+   * Deduplicate search results based on title similarity
+   */
+  deduplicateResults(results) {
+    const seen = new Set();
+    const unique = [];
+
+    for (const result of results) {
+      // Normalize title for comparison
+      const normalizedTitle = result.title
+        .toLowerCase()
+        .replace(/[^\w\s]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      if (!seen.has(normalizedTitle)) {
+        seen.add(normalizedTitle);
+        unique.push(result);
+      }
+    }
+
+    return unique;
   }
 
   /**

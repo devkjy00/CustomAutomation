@@ -18,6 +18,14 @@ public interface DalaiClient {
     @Headers("Content-Type: application/json")
     String sendPromptWithSearch(@RequestParam("q") String q, @RequestParam("search") boolean search);
 
+    @GetMapping(value = "/users", consumes = "application/json")
+    @Headers("Content-Type: application/json")
+    String sendPromptWithSearchAgent(
+        @RequestParam("q") String q,
+        @RequestParam("search") boolean search,
+        @RequestParam("agent") boolean agent
+    );
+
     @GetMapping(value = "/users/search", consumes = "application/json")
     @Headers("Content-Type: application/json")
     String performWebSearch(@RequestParam("q") String query, @RequestParam(value = "source", defaultValue = "multi") String source);
