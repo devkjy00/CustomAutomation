@@ -195,19 +195,14 @@ class AutonomousSearchAgent {
 
   /**
    * AI가 검색 계획 수립
+   * P1 개선: Prompt 간소화로 AI 응답 속도 향상 (5-8초 → 3-5초 목표)
    */
   async planSearch(userQuery) {
-    const template = `사용자 질문: "${userQuery}"
-
-이 질문에 답하기 위한 최적의 검색 전략을 수립하세요.
-
-출력 형식:
-keywords: [검색 키워드]
-targetSites: [추천 웹사이트 목록]
-informationType: [필요한 정보 유형: 사실/수치/설명/최신뉴스 등]
-estimatedDepth: [필요한 탐색 깊이: 1-3]
-
-간결하게 출력하세요.`;
+    const template = `질문: "${userQuery}"
+검색 전략 수립:
+keywords: [핵심 검색어]
+informationType: [정보유형]
+estimatedDepth: [1-3]`;
 
     const result = await aiService.callAI(template, 'Autonomous Search Planning');
 
@@ -227,27 +222,21 @@ estimatedDepth: [필요한 탐색 깊이: 1-3]
 
   /**
    * AI가 링크 우선순위 결정
+   * P1 개선: Prompt 간소화 및 top-5만 요청으로 속도 향상
    */
   async prioritizeLinks(userQuery, searchResults, searchPlan) {
-    const searchResultsText = searchResults
-      .map((r, i) => `[${i+1}] 제목: ${r.title}\n스니펫: ${r.snippet}\n링크: ${r.link}`)
-      .join('\n\n');
+    // Top 10개만 평가 (전체가 10개 미만이면 전체)
+    const topResults = searchResults.slice(0, 10);
+    const searchResultsText = topResults
+      .map((r, i) => `[${i+1}] ${r.title}\n${r.snippet}`)
+      .join('\n');
 
-    const template = `사용자 질문: "${userQuery}"
-검색 목표: ${searchPlan.informationType}
-
-검색 결과:
+    const template = `질문: "${userQuery}"
+검색결과:
 ${searchResultsText}
 
-위 결과 중 사용자 질문에 답하기 위해 방문해야 할 링크를 우선순위대로 선택하세요.
-각 링크의 유용성을 0-1 사이로 평가하고, 상위 5개를 선택하세요.
-
-출력 형식 (한 줄에 하나씩):
-[번호] score: [점수]
-
-예시:
-[1] score: 0.9
-[3] score: 0.8`;
+상위 5개 선택:
+[번호] score: [0-1]`;
 
     const result = await aiService.callAI(template, 'Link Prioritization');
 
@@ -261,10 +250,10 @@ ${searchResultsText}
         const index = parseInt(match[1]) - 1;
         const score = parseFloat(match[2]);
 
-        if (index >= 0 && index < searchResults.length) {
+        if (index >= 0 && index < topResults.length) {
           prioritized.push({
-            ...searchResults[index],
-            url: searchResults[index].link,
+            ...topResults[index],
+            url: topResults[index].link,
             priorityScore: score
           });
         }
@@ -277,80 +266,114 @@ ${searchResultsText}
 
   /**
    * 웹 페이지 내용 추출
+   * P1 개선: DuckDuckGo URL 추출 및 재시도 로직 추가
    */
-  async extractPageContent(url) {
-    try {
-      console.log(`[Agent] Extracting content from: ${url}`);
+  async extractPageContent(url, retries = 2) {
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        // P1 개선: DuckDuckGo 리다이렉트 URL에서 실제 URL 추출
+        let normalizedUrl = url;
+        if (url.includes('duckduckgo.com/l/') && url.includes('uddg=')) {
+          const uddgMatch = url.match(/uddg=([^&]+)/);
+          if (uddgMatch) {
+            normalizedUrl = decodeURIComponent(uddgMatch[1]);
+            console.log(`[Agent] Extracted DuckDuckGo target: ${normalizedUrl}`);
+          }
+        }
 
-      const response = await axios.get(url, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
-          'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8',
-        },
-        timeout: 10000,
-        maxRedirects: 5,
-        responseEncoding: 'utf8'
-      });
+        // URL 정규화: //로 시작하는 URL을 https://로 변환
+        if (normalizedUrl.startsWith('//')) {
+          normalizedUrl = 'https:' + normalizedUrl;
+        } else if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
+          normalizedUrl = 'https://' + normalizedUrl;
+        }
 
-      const $ = cheerio.load(response.data);
+        if (attempt > 0) {
+          console.log(`[Agent] Retry ${attempt}/${retries}: ${normalizedUrl}`);
+        } else {
+          console.log(`[Agent] Extracting content from: ${normalizedUrl}`);
+        }
 
-      // 불필요한 요소 제거
-      $('script, style, nav, header, footer, iframe, noscript').remove();
+        const response = await axios.get(normalizedUrl, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+            'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8',
+          },
+          timeout: 10000,
+          maxRedirects: 5,
+          responseEncoding: 'utf8'
+        });
 
-      // 본문 추출 시도
-      let content = '';
+        const $ = cheerio.load(response.data);
 
-      // 일반적인 본문 셀렉터들 시도
-      const contentSelectors = [
-        'article',
-        '[role="main"]',
-        'main',
-        '.content',
-        '.post-content',
-        '#content',
-        '.entry-content',
-        'body'
-      ];
+        // 불필요한 요소 제거
+        $('script, style, nav, header, footer, iframe, noscript').remove();
 
-      for (const selector of contentSelectors) {
-        const elem = $(selector);
-        if (elem.length > 0) {
-          content = elem.text().trim();
-          if (content.length > 200) break;
+        // 본문 추출 시도
+        let content = '';
+
+        // 일반적인 본문 셀렉터들 시도
+        const contentSelectors = [
+          'article',
+          '[role="main"]',
+          'main',
+          '.content',
+          '.post-content',
+          '#content',
+          '.entry-content',
+          'body'
+        ];
+
+        for (const selector of contentSelectors) {
+          const elem = $(selector);
+          if (elem.length > 0) {
+            content = elem.text().trim();
+            if (content.length > 200) break;
+          }
+        }
+
+        // 텍스트 정리
+        content = content
+          .replace(/\s+/g, ' ')
+          .replace(/\n+/g, '\n')
+          .trim()
+          .substring(0, 3000); // 최대 3000자
+
+        if (content.length > 100) {
+          return content;
+        } else if (attempt < retries) {
+          console.log(`[Agent] Content too short (${content.length} chars), retrying...`);
+          await new Promise(resolve => setTimeout(resolve, 1000)); // 1초 대기
+          continue;
+        } else {
+          return null;
+        }
+
+      } catch (error) {
+        if (attempt < retries) {
+          console.error(`[Agent] Attempt ${attempt + 1} failed: ${error.message}, retrying...`);
+          await new Promise(resolve => setTimeout(resolve, 1000)); // 1초 대기
+        } else {
+          console.error(`[Agent] All attempts failed for ${url}:`, error.message);
+          return null;
         }
       }
-
-      // 텍스트 정리
-      content = content
-        .replace(/\s+/g, ' ')
-        .replace(/\n+/g, '\n')
-        .trim()
-        .substring(0, 3000); // 최대 3000자
-
-      return content.length > 100 ? content : null;
-
-    } catch (error) {
-      console.error(`[Agent] Failed to extract content from ${url}:`, error.message);
-      return null;
     }
+    return null;
   }
 
   /**
    * AI가 페이지 내용의 관련성 평가
+   * P1 개선: Prompt 간소화 및 컨텐츠 축약으로 속도 향상
    */
   async evaluateRelevance(userQuery, pageContent) {
-    const template = `사용자 질문: "${userQuery}"
+    // 컨텐츠를 1000자로 축약 (1500 → 1000)
+    const template = `질문: "${userQuery}"
+내용: ${pageContent.substring(0, 1000)}
 
-페이지 내용:
-${pageContent.substring(0, 1500)}
-
-이 페이지 내용이 사용자 질문과 얼마나 관련있는지 평가하세요.
-
-출력 형식:
-score: [0.0-1.0]
-insights: [핵심 정보 요약 - 50자 이내]
-
-간결하게 출력하세요.`;
+평가:
+score: [0-1]
+insights: [핵심정보 30자]`;
 
     const result = await aiService.callAI(template, 'Content Relevance Evaluation');
 
@@ -365,24 +388,20 @@ insights: [핵심 정보 요약 - 50자 이내]
 
   /**
    * AI가 수집된 정보의 충분성 평가
+   * P1 개선: Prompt 간소화
    */
   async evaluateSufficiency(userQuery, gatheredInfo) {
     const infoSummary = gatheredInfo
-      .map((info, i) => `[${i+1}] ${info.title}\n핵심: ${info.insights}`)
-      .join('\n\n');
+      .map((info, i) => `${i+1}. ${info.insights}`)
+      .join('\n');
 
-    const template = `사용자 질문: "${userQuery}"
-
-현재까지 수집된 정보:
+    const template = `질문: "${userQuery}"
+수집정보:
 ${infoSummary}
 
-이 정보가 사용자 질문에 충분히 답변할 수 있는지 평가하세요.
-
-출력 형식:
-score: [0.0-1.0]
-missing: [부족한 정보가 있다면 설명]
-
-간결하게 출력하세요.`;
+충분성 평가:
+score: [0-1]
+missing: [부족정보]`;
 
     const result = await aiService.callAI(template, 'Information Sufficiency Evaluation');
 
@@ -397,24 +416,19 @@ missing: [부족한 정보가 있다면 설명]
 
   /**
    * 정보가 부족할 때 새로운 검색 전략 수립
+   * P1 개선: Prompt 간소화
    */
   async replanSearch(userQuery, gatheredInfo) {
     const infoSummary = gatheredInfo
-      .map(info => `- ${info.title}: ${info.insights}`)
+      .slice(0, 5) // 최근 5개만 요약에 포함
+      .map(info => `- ${info.insights}`)
       .join('\n');
 
-    const template = `사용자 질문: "${userQuery}"
+    const template = `질문: "${userQuery}"
+수집: ${infoSummary}
 
-현재까지 수집된 정보:
-${infoSummary}
-
-정보가 부족합니다. 새로운 검색 전략을 수립하세요.
-
-출력 형식:
-keywords: [새로운 검색 키워드]
-targetSites: [시도할 웹사이트]
-
-간결하게 출력하세요.`;
+새 전략:
+keywords: [검색어]`;
 
     const result = await aiService.callAI(template, 'Search Replanning');
 
