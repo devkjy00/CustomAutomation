@@ -22,7 +22,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Server paths
-AI_SERVER_DIR="/Users/jy_mac/MyDir/project/customAuto/AI/my-project"
+AI_SERVER_DIR="/Users/jy_mac/MyDir/project/customAuto/AI"
 CUSTOM_AUTO_DIR="/Users/jy_mac/MyDir/project/customAuto/CustomAutomation"
 
 # PID files
